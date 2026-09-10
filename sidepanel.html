@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Payload Sidecar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="sidepanel.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <polyline points="1,12 7,12 9,5 13,19 15,12 23,12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="titles">
+      <h1>Payload Sidecar</h1>
+      <p id="statusLine">Intercepting on this tab</p>
+    </div>
+    <label class="master-switch" title="Turn all mock interception on or off">
+      <input type="checkbox" id="masterToggle" checked />
+      <span class="track"><span class="thumb"></span></span>
+    </label>
+  </header>
+
+  <nav class="tabbar" role="tablist">
+    <button class="tab active" data-tab="mocks" role="tab" aria-selected="true">Mocks</button>
+    <button class="tab" data-tab="webhooks" role="tab" aria-selected="false">Webhooks</button>
+  </nav>
+
+  <main>
+    <!-- MOCKS VIEW -->
+    <section id="view-mocks" class="view active">
+      <div class="view-actions">
+        <button id="newRuleBtn" class="btn primary">New rule</button>
+        <span class="count" id="ruleCount">0 rules</span>
+      </div>
+
+      <div id="ruleForm" class="rule-form hidden">
+        <div class="form-row">
+          <label>Name <span class="opt">(optional)</span></label>
+          <input type="text" id="f-name" placeholder="e.g. Empty cart response" />
+        </div>
+        <div class="form-row two-up">
+          <div>
+            <label>Method</label>
+            <select id="f-method">
+              <option>ANY</option>
+              <option>GET</option>
+              <option>POST</option>
+              <option>PUT</option>
+              <option>PATCH</option>
+              <option>DELETE</option>
+            </select>
+          </div>
+          <div>
+            <label>Match type</label>
+            <select id="f-matchtype">
+              <option value="contains">URL contains</option>
+              <option value="regex">Regex</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Match pattern</label>
+          <input type="text" id="f-match" class="mono" placeholder="/api/cart or ^https://.*/orders/\d+$" />
+        </div>
+        <div class="form-row two-up">
+          <div>
+            <label>Status code</label>
+            <input type="number" id="f-status" value="200" />
+          </div>
+          <div>
+            <label>Delay (ms)</label>
+            <input type="number" id="f-delay" value="0" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Body type</label>
+          <select id="f-bodytype">
+            <option value="json">JSON</option>
+            <option value="text">Plain text</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Response body</label>
+          <textarea id="f-body" class="mono" rows="6" placeholder='{ "ok": true }'></textarea>
+        </div>
+        <div class="form-actions">
+          <button id="cancelRuleBtn" class="btn ghost">Cancel</button>
+          <button id="saveRuleBtn" class="btn primary">Save rule</button>
+        </div>
+      </div>
+
+      <ul id="ruleList" class="rule-list"></ul>
+      <p id="emptyRules" class="empty">No rules yet. New rules start disabled-safe — nothing is intercepted until you add one and it's on.</p>
+
+      <div class="activity">
+        <h2>Recent activity</h2>
+        <ul id="activityList" class="activity-list"></ul>
+        <p id="emptyActivity" class="empty small">Mocked requests will show up here as pages load.</p>
+      </div>
+    </section>
+
+    <!-- WEBHOOKS VIEW -->
+    <section id="view-webhooks" class="view">
+      <div class="composer">
+        <div class="form-row two-up-uneven">
+          <select id="w-method">
+            <option>POST</option>
+            <option>PUT</option>
+            <option>PATCH</option>
+            <option>GET</option>
+            <option>DELETE</option>
+          </select>
+          <input type="text" id="w-url" class="mono" placeholder="https://example.com/webhooks/incoming" />
+        </div>
+
+        <div class="headers-block">
+          <div class="headers-head">
+            <label>Headers</label>
+            <button id="addHeaderBtn" class="btn tiny">Add header</button>
+          </div>
+          <div id="headerRows"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="body-head">
+            <label>Payload body</label>
+            <button id="prettifyBtn" class="btn tiny">Prettify</button>
+          </div>
+          <textarea id="w-body" class="mono" rows="8" placeholder='{ "event": "order.created", "id": "1234" }'></textarea>
+        </div>
+
+        <button id="sendWebhookBtn" class="btn primary full">Send payload</button>
+      </div>
+
+      <div id="responsePanel" class="response-panel hidden">
+        <div class="response-meta">
+          <span id="respStatus" class="status-pill"></span>
+          <span id="respDuration" class="muted"></span>
+        </div>
+        <pre id="respBody" class="mono response-body"></pre>
+      </div>
+
+      <div class="history">
+        <h2>Send history</h2>
+        <ul id="historyList" class="history-list"></ul>
+        <p id="emptyHistory" class="empty small">Sent payloads are logged here so you can replay them.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="sidepanel.js"></script>
+</body>
+</html>
