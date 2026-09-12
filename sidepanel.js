@@ -1,5 +1,3 @@
-const GUMROAD_PRODUCT_PERMALINK = "https://vixenhavoc1.gumroad.com/l/mqseou";
-const GUMROAD_BUY_URL = "https://vixenhavoc1.gumroad.com/l/mqseou?wanted=true";
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
